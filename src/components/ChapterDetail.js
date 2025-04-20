@@ -158,6 +158,7 @@ export default function ChapterDetail({ chapter, onClose, isVisible }) {
           </div>
         );
         
+      // Fixing the overlapping text in the concepts section
       case 'concepts':
         return (
           <div className="p-4">
@@ -325,70 +326,86 @@ export default function ChapterDetail({ chapter, onClose, isVisible }) {
       onClick={onClose}
     >
       <motion.div
-        ref={containerRef}
-        className="w-11/12 max-w-5xl h-4/5 bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border-2"
-        style={bgColorStyle}
-        onClick={(e) => e.stopPropagation()}
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ type: 'spring', damping: 20 }}
+  ref={containerRef}
+  className="w-11/12 max-w-5xl h-4/5 bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border glass-panel"
+  style={{
+    borderColor: `#${chapter.color.toString(16)}40`,
+    boxShadow: `0 0 30px rgba(${(chapter.color >> 16) & 255}, ${(chapter.color >> 8) & 255}, ${chapter.color & 255}, 0.15)`
+  }}
+  onClick={(e) => e.stopPropagation()}
+  initial={{ scale: 0.9, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  exit={{ scale: 0.9, opacity: 0 }}
+  transition={{ type: 'spring', damping: 20 }}
+>
+  {/* Header with improved styling */}
+  <div className="bg-gray-800 bg-opacity-70 backdrop-blur-sm px-6 py-4 flex flex-col md:flex-row justify-between border-b border-gray-700">
+    <div className="flex items-center">
+      <div 
+        className="w-10 h-10 rounded-full flex items-center justify-center mr-3" 
+        style={{ 
+          background: `linear-gradient(135deg, #${chapter.color.toString(16)}80, #${chapter.color.toString(16)}40)`,
+          boxShadow: `0 0 10px rgba(${(chapter.color >> 16) & 255}, ${(chapter.color >> 8) & 255}, ${chapter.color & 255}, 0.3)`
+        }}
       >
-        {/* Header with close button and tabs */}
-        <div className="bg-gray-800 px-6 py-4 flex flex-col md:flex-row justify-between border-b border-gray-700">
-          <div className="flex items-center">
-            <div 
-              className="w-3 h-3 rounded-full mr-3" 
-              style={{ backgroundColor: accentColor }}
-            ></div>
-            <h2 className="text-xl font-bold text-white">
-              {chapter.title.split(':')[0]}
-            </h2>
-          </div>
-          
-          {/* Navigation Tabs */}
-          <div className="flex mt-4 md:mt-0 space-x-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  activeSection === section.id 
-                    ? 'text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                }`}
-                style={activeSection === section.id ? { backgroundColor: accentColor } : {}}
-                onClick={() => setActiveSection(section.id)}
-              >
-                {section.label}
-              </button>
-            ))}
-            
-            <button
-              onClick={onClose}
-              className="ml-4 text-gray-400 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-lg transition-all"
-              aria-label="Close chapter details"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-        
-        {/* Content Area */}
-        <div className="text-white h-[calc(100%-76px)] overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSection}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              {renderSectionContent()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        <span className="text-lg font-bold text-white">
+          {chapter.title.charAt(0)}
+        </span>
+      </div>
+      <h2 className="text-xl font-bold text-white">
+        {chapter.title.split(':')[0]}
+        <span className="block text-sm font-normal text-gray-300 mt-1">
+          {chapter.title.split(':')[1] ? chapter.title.split(':')[1].trim() : ''}
+        </span>
+      </h2>
+    </div>
+    
+    {/* Navigation Tabs with improved styling */}
+    <div className="flex mt-4 md:mt-0 space-x-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+      {sections.map((section) => (
+        <button
+          key={section.id}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            activeSection === section.id 
+              ? 'text-white' 
+              : 'text-gray-400 hover:text-white hover:bg-gray-700 hover:bg-opacity-50'
+          }`}
+          style={activeSection === section.id ? { 
+            background: `linear-gradient(135deg, #${chapter.color.toString(16)}, #${chapter.color.toString(16)}90)`,
+            boxShadow: `0 2px 10px rgba(${(chapter.color >> 16) & 255}, ${(chapter.color >> 8) & 255}, ${chapter.color & 255}, 0.3)`
+          } : {}}
+          onClick={() => setActiveSection(section.id)}
+        >
+          {section.label}
+        </button>
+      ))}
+      
+      <button
+        onClick={onClose}
+        className="ml-4 text-gray-400 hover:text-white hover:bg-gray-700 hover:bg-opacity-50 px-3 py-2 rounded-lg transition-all"
+        aria-label="Close chapter details"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+  
+  {/* Content Area with improved motion */}
+  <div className="text-white h-[calc(100%-76px)] overflow-y-auto custom-scrollbar">
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeSection}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="h-full"
+      >
+        {renderSectionContent()}
       </motion.div>
+    </AnimatePresence>
+  </div>
+</motion.div>
     </div>
   );
 }

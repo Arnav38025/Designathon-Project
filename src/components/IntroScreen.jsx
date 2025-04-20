@@ -3,8 +3,17 @@ import { useState, useEffect } from 'react';
 export default function IntroScreen({ onComplete }) {
   const [opacity, setOpacity] = useState(1);
   const [titleScale, setTitleScale] = useState(0.95);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  
+  // Keywords that will display one after another without overlapping
+  const keywords = ["Learn", "Innovate", "Discover", "Explore"];
 
   useEffect(() => {
+    // Cycle through keywords
+    const keywordInterval = setInterval(() => {
+      setCurrentTextIndex((prev) => (prev + 1) % keywords.length);
+    }, 600);
+
     // Initial animation - scale up
     setTimeout(() => {
       setTitleScale(1);
@@ -22,9 +31,12 @@ export default function IntroScreen({ onComplete }) {
       }, 1000); // 800ms for fade out animation
 
       return () => clearTimeout(fadeTimer);
-    }, 1500);
+    }, 3000); // Extended time to allow for keyword cycling
 
-    return () => clearTimeout(displayTimer);
+    return () => {
+      clearTimeout(displayTimer);
+      clearInterval(keywordInterval);
+    };
   }, [onComplete]);
 
   return (
@@ -46,8 +58,8 @@ export default function IntroScreen({ onComplete }) {
         <h1 className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 text-6xl tracking-tight">
           Block Path
         </h1>
-        <p className="text-white text-xl mt-4 opacity-80 tracking-wide">
-          A Virtual Experience
+        <p className="text-white text-xl mt-4 opacity-80 tracking-wide h-8">
+          {keywords[currentTextIndex]}
         </p>
       </div>
     </div>

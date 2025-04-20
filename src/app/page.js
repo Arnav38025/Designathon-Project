@@ -55,24 +55,19 @@ export default function Home() {
             isVisible={isDetailVisible}
           />
           
-          {/* Title and Instructions */}
-          <div className="absolute top-8 left-8 text-white z-10">
-            <h1 className="text-3xl font-bold mb-2">Block Path: A Virtual Experience</h1>
-            <p className="opacity-70">Click on spheres to explore the blockchain and get started</p>
+          {/* Compact Title in top-left */}
+          <div className="absolute top-8 left-8 text-white z-10 max-w-xs">
+            <h1 className="text-2xl font-bold mb-1">Block Path</h1>
+            <p className="text-sm opacity-70">Explore the blockchain journey</p>
           </div>
 
           {/* ChatBot Component */}
           <ChatBot />
-            
-            {/* Crypto Widget */}
+          
+          {/* Crypto Widget - positioned bottom-right */}
           <div className="absolute bottom-8 right-8 z-10">
             <Crypto />
           </div>
-
-          
-            
-
-          
         </>
       )}
     </div>

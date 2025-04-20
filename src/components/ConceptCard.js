@@ -31,7 +31,7 @@ export default function ConceptCard({ card, index, accentColor }) {
           </div>
         </div>
         
-        {/* Back of Card */}
+        {/* Back of Card - Added overflow-auto to prevent text overlap */}
         <div 
           className="absolute w-full h-full backface-hidden rounded-2xl p-6 transform-rotate-y-180 flex flex-col"
           style={{ 
@@ -40,7 +40,9 @@ export default function ConceptCard({ card, index, accentColor }) {
           }}
         >
           <h4 className="text-xl font-bold mb-4">{card.title}</h4>
-          <p className="text-gray-200 flex-grow">{card.content}</p>
+          <div className="overflow-auto flex-grow">
+            <p className="text-gray-200">{card.content}</p>
+          </div>
           <p className="text-sm text-gray-300 mt-4">Click to flip back</p>
         </div>
       </motion.div>

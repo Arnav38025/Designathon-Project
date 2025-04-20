@@ -347,29 +347,65 @@ export default class SceneManager {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     const canvasWidth = 1024;
-    const canvasHeight = 256;
+    const canvasHeight = 512; // Increased height for better text rendering
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     
-    // Gradient background
+    // Clear background with transparency
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Gradient background with improved opacity
     const gradient = context.createLinearGradient(0, 0, canvasWidth, 0);
-    gradient.addColorStop(0, `rgba(0, 0, 0, 0.7)`);
-    gradient.addColorStop(0.5, `rgba(${(chapter.color >> 16) & 255}, ${(chapter.color >> 8) & 255}, ${chapter.color & 255}, 0.8)`);
-    gradient.addColorStop(1, `rgba(0, 0, 0, 0.7)`);
+    gradient.addColorStop(0, `rgba(0, 0, 0, 0.5)`);
+    gradient.addColorStop(0.5, `rgba(${(chapter.color >> 16) & 255}, ${(chapter.color >> 8) & 255}, ${chapter.color & 255}, 0.7)`);
+    gradient.addColorStop(1, `rgba(0, 0, 0, 0.5)`);
+    
+    // Create rounded rectangle for better aesthetics
+    const cornerRadius = 40;
+    context.beginPath();
+    context.moveTo(cornerRadius, 0);
+    context.lineTo(canvasWidth - cornerRadius, 0);
+    context.quadraticCurveTo(canvasWidth, 0, canvasWidth, cornerRadius);
+    context.lineTo(canvasWidth, canvasHeight - cornerRadius);
+    context.quadraticCurveTo(canvasWidth, canvasHeight, canvasWidth - cornerRadius, canvasHeight);
+    context.lineTo(cornerRadius, canvasHeight);
+    context.quadraticCurveTo(0, canvasHeight, 0, canvasHeight - cornerRadius);
+    context.lineTo(0, cornerRadius);
+    context.quadraticCurveTo(0, 0, cornerRadius, 0);
+    context.closePath();
     
     context.fillStyle = gradient;
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    context.fill();
     
-    // Text with shadow
+    // Add subtle border
+    context.strokeStyle = `rgba(255, 255, 255, 0.3)`;
+    context.lineWidth = 2;
+    context.stroke();
+    
+    // Extract title parts for better formatting
+    const titleParts = chapter.title.split(':');
+    const mainTitle = titleParts[0].trim();
+    const subtitle = titleParts.length > 1 ? titleParts[1].trim() : '';
+    
+    // Text with enhanced shadow
     context.shadowColor = 'rgba(0, 0, 0, 0.7)';
     context.shadowBlur = 15;
     context.shadowOffsetX = 4;
     context.shadowOffsetY = 4;
-    context.font = 'bold 72px Arial';
+    
+    // Main title text
+    context.font = 'bold 84px "Space Grotesk", sans-serif';
     context.fillStyle = 'white';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText(chapter.title, canvasWidth / 2, canvasHeight / 2);
+    context.fillText(mainTitle, canvasWidth / 2, canvasHeight / 2 - 40);
+    
+    // Subtitle (if exists)
+    if (subtitle) {
+      context.font = '400 48px "Inter", sans-serif';
+      context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      context.fillText(subtitle, canvasWidth / 2, canvasHeight / 2 + 40);
+    }
     
     const texture = new THREE.CanvasTexture(canvas);
     texture.anisotropy = 16;
@@ -382,14 +418,15 @@ export default class SceneManager {
       depthWrite: false
     });
     
+    // Create larger geometry for the text to prevent cutoff
     const textMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(5, 1.25),
+      new THREE.PlaneGeometry(7, 3.5), // Wider and taller plane
       textMaterial
     );
     
     textMesh.position.set(
       chapter.position.x,
-      chapter.position.y + 2.2,
+      chapter.position.y + 2.5, // Moved slightly higher
       chapter.position.z
     );
     
