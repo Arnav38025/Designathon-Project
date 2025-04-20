@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import ChapterDetail from '../components/ChapterDetail';
 import NavigationButtons from '../components/UI/NavigationButtons';
 import ProgressIndicator from '../components/UI/ProgressIndicator';
+import ChatBot from '../components/chatbot';
 import useThreeScene from '../hooks/useThreeScene.js';
 
 export default function Home() {
@@ -51,6 +52,9 @@ export default function Home() {
         <h1 className="text-3xl font-bold mb-2">Blockchain Learning Path</h1>
         <p className="opacity-70">Click on spheres to explore chapters or use navigation buttons</p>
       </div>
+
+      {/* ChatBot Component */}
+      <ChatBot />
     </div>
   );
 }
